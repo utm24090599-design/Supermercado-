@@ -8,6 +8,8 @@ que simule el funcionamiento, siguiendo las siguientes reglas:
 */
 
 import java.util.Random;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class Martkarts {
 
@@ -17,145 +19,75 @@ public class Martkarts {
 
         int carritos = 25; // maximo de carros
         int people = 0; // gente en el super
-        int max_people = 29; // maximo de gente
-        int max_clientes_gi = random.nextInt(5) + 1;// maximo de personas que pueden llegar
+        int people_in = 0;
+        int carritosDisponibles = carritos;
 
         // Cajas
-        int c1 = 0;
-        int c2 = 0;
-        int c3 = 0;
+        Queue<Integer> caja1 = new LinkedList<>();
+        Queue<Integer> caja2 = new LinkedList<>();
+        Queue<Integer> caja3 = new LinkedList<>();
 
-        while (people < max_people) {
+        int time_to_close = 20000;
+         long tiempoInicio = System.currentTimeMillis();
 
-            max_clientes_gi = random.nextInt(4) + 1;  
+        while (System.currentTimeMillis() - tiempoInicio < time_to_close) {
 
-            if (carritos >= max_clientes_gi) {
+            int max_clientes_gi = random.nextInt(5) + 1;// maximo de personas que pueden llegar
 
-                people += max_clientes_gi;
-                carritos -= max_clientes_gi;
+            System.out.println("--- Nueva ronda ---");
+            System.out.println("Clientes que llegan: " + max_clientes_gi);
+            System.out.println("Carritos disponibles: " + carritosDisponibles);
 
-                System.out.println("Gente en el market: " + people);
-                System.out.println("Carritos restantes: " + carritos);
+            if (carritosDisponibles >= max_clientes_gi) {
 
                 for (int i = 0; i < max_clientes_gi; i++) {
 
-                    if (c1 <= c2 && c1 <= c3) {
-                        c1++;
-                        System.out.println("Cliente se formó en Caja 1");
-                    } else if (c2 <= c1 && c2 <= c3) {
-                        c2++;
-                        System.out.println("Cliente se formó en Caja 2");
-                    } else {
-                        c3++;
-                        System.out.println("Cliente se formó en Caja 3");
-                    }
+                    // Tomar un carrito
+                    carritosDisponibles--;
+
+                    // PUNTO c: Colocar en la cola con menos gente
+                    Queue<Integer> colaElegida = elegirColaMenosGente(caja1, caja2, caja3);
+                    colaElegida.add(1); // Agregar cliente a la cola
+
+                    String nombreCaja = "";
+                    if (colaElegida == caja1)
+                        nombreCaja = "Caja 1";
+                    else if (colaElegida == caja2)
+                        nombreCaja = "Caja 2";
+                    else
+                        nombreCaja = "Caja 3";
+
+                    System.out.println("  Cliente " + (people + i + 1) +
+                            " tomó carrito y se formó en " + nombreCaja);
                 }
 
-                System.out.println("Colas -> C1: " + c1 + " C2: " + c2 + " C3: " + c3);
+                people_in += caja1.size() + caja2.size() + caja3.size();
+                people += max_clientes_gi;
 
             } else {
 
-                System.out.println("No hay carritos, aguanta..");
+                System.out.println("No hay carritos, aguanta.. (" + carritosDisponibles +
+                        " disponibles, necesitan " + max_clientes_gi + ")");
+                System.out.println("Clientes esperando...");
 
-                Thread.sleep(3000);
+                carritosDisponibles = 25;
 
-                // Simulamos que alguien paga y libera carrito
-                if (c1 > 0) {
-                    c1--;
-                } else if (c2 > 0) {
-                    c2--;
-                } else if (c3 > 0) {
-                    c3--;
-                }
-
-                carritos++;
-                people--;
-
-                System.out.println("Un cliente pagó y liberó carrito.");
-                System.out.println("Carritos disponibles: " + carritos);
+                Thread.sleep(2000);
             }
-
-            Thread.sleep(1500);
         }
 
-        System.out.println("Supermercado lleno.");
-    }
-}
-=======
+        System.out.println("Supermercado Cerrado. Los " + people_in + " clientes han sido evacuada educadamente");
 
-    c1 -> 7
-    c2 -> 7
-    c3 -> 2
-
-    carritos = 25
-    max_clientes_gi = 5
-    max_people = 30
-
-                                            /--yes-> carritos -1.
-    a. cliente -> arrive -> <Hay carritos?>|                        /César
-                                            \--no-> esperar carrito.
-    
-    b. cliente -> arrive_cola -> espera_cola. /Juan
-
-                    /--1-> move.
-    c. <who_hless?>| --2-> move. /Yo
-                    \--3-> move.
-
-    d. clente -> left -> carrtios + 1. /Jose luis
-*/
-import java.util.Random;;
-public class Martkarts {
-
-
-
-  
-
-
-
-    public static void main(String[] args) throws InterruptedException {
-
-    Random random = new Random();
-
-    int carritos = 25; // maximo de carros
-    int people = 0; //gente en el super
-    int max_people = 29; // maximo de gente
-    int max_clientes_gi = random.nextInt(5) + 1;// maximo de personas que pueden llegar
-
-    while (people < max_people) {
-
-    max_clientes_gi = random.nextInt(4) + 1;  
-
-    if (carritos >= max_clientes_gi) {
-
-        people += max_clientes_gi;
-        carritos -= max_clientes_gi;
-
-        System.out.println("Gente en el market: " + people);
-        System.out.println("Carritos restantes: " + carritos);
-
-    } else {
-
-        System.out.println("No hay  carritos, aguanta..");
-
-        Thread.sleep(3000);  
-
-        carritos++; 
-        System.out.println("Un cliente termino su compra y se fue alv, 1 Carrito libre .");
-    }
-}
-
-
-
-
-
-
-
-
-
-
-        
     }
 
-    
+    private static Queue<Integer> elegirColaMenosGente(Queue<Integer> c1, Queue<Integer> c2, Queue<Integer> c3) {
+        if (c1.size() <= c2.size() && c1.size() <= c3.size()) {
+            return c1;
+        } else if (c2.size() <= c1.size() && c2.size() <= c3.size()) {
+            return c2;
+        } else {
+            return c3;
+        }
+    }
+
 }
->>>>>>> da34df2ed64a1b59a40651528be78f0c7e1a3c82
