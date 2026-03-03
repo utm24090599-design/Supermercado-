@@ -28,7 +28,7 @@ public class Martkarts {
         Queue<Integer> caja3 = new LinkedList<>();
 
         int time_to_close = 20000;
-         long tiempoInicio = System.currentTimeMillis();
+        long tiempoInicio = System.currentTimeMillis();
 
         while (System.currentTimeMillis() - tiempoInicio < time_to_close) {
 
@@ -65,18 +65,42 @@ public class Martkarts {
                 people += max_clientes_gi;
 
             } else {
-
                 System.out.println("No hay carritos, aguanta.. (" + carritosDisponibles +
                         " disponibles, necesitan " + max_clientes_gi + ")");
                 System.out.println("Clientes esperando...");
 
-                carritosDisponibles = 25;
-
                 Thread.sleep(2000);
+
+                boolean seLiberoCarrito = false;
+
+                if (!caja1.isEmpty()) {
+                    caja1.poll();
+                    carritosDisponibles++;
+                    people_in--;
+                    seLiberoCarrito = true;
+                    System.out.println("Cliente de la caja 1 termino de pagar.");
+                } else if (!caja2.isEmpty()) {
+                    caja2.poll();
+                    carritosDisponibles++;
+                    people_in--;
+                    seLiberoCarrito = true;
+                    System.out.println("Cliente de la caja 1 termino de pagar.");
+                } else if (!caja3.isEmpty()) {
+                    caja3.poll();
+                    carritosDisponibles++;
+                    people_in--;
+                    seLiberoCarrito = true;
+                    System.out.println("Cliente de la caja 1 termino de pagar.");
+                }
+                if (seLiberoCarrito) {
+                    System.out.println(" Carritos ahora disponibles: " + carritosDisponibles);
+                } else {
+                    System.out.println(" No hay clientes esperando para pagar.");
+                }
             }
         }
 
-        System.out.println("Supermercado Cerrado. Los " + people_in + " clientes han sido evacuada educadamente");
+        System.out.println("Supermercado Cerrado. Los " + people_in + " clientes han sido evacuados educadamente");
 
     }
 
