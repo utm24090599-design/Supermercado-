@@ -5,6 +5,26 @@ que simule el funcionamiento, siguiendo las siguientes reglas:
     b. Ningún cliente se impaciente y abandona el supermercado sin pasar por alguna de las colas de las cajas.
     c. Cuando un cliente finaliza su compra, se coloca en la cola de la caja que hay menos gente, y no se cambia de cola.
     d. En el momento en que un cliente paga en la caja, su carrito de compra queda disponible. 
+
+    c1 -> 7
+    c2 -> 7
+    c3 -> 2
+
+    carritos = 25
+    max_clientes_gi = 5
+    max_people = 30
+
+                                            /--yes-> carritos -1.
+    a. cliente -> arrive -> <Hay carritos?>|                        /César
+                                            \--no-> esperar carrito.
+    
+    b. cliente -> arrive_cola -> espera_cola. /Juan
+
+                    /--1-> move.
+    c. <who_hless?>| --2-> move. /Yo
+                    \--3-> move.
+
+    d. clente -> left -> carrtios + 1. /Jose luis
 */
 
 import java.util.Random;
@@ -65,42 +85,36 @@ public class Martkarts {
                 people += max_clientes_gi;
 
             } else {
-                System.out.println("No hay carritos, aguanta.. (" + carritosDisponibles +
-                        " disponibles, necesitan " + max_clientes_gi + ")");
-                System.out.println("Clientes esperando...");
 
-                Thread.sleep(2000);
-
-                boolean seLiberoCarrito = false;
-
+                // Simular que un cliente paga en la caja
                 if (!caja1.isEmpty()) {
                     caja1.poll();
                     carritosDisponibles++;
                     people_in--;
-                    seLiberoCarrito = true;
-                    System.out.println("Cliente de la caja 1 termino de pagar.");
-                } else if (!caja2.isEmpty()) {
+                    System.out.println("Cliente atendido en Caja 1, carrito liberado.");
+                }
+
+                if (!caja2.isEmpty()) {
                     caja2.poll();
                     carritosDisponibles++;
                     people_in--;
-                    seLiberoCarrito = true;
-                    System.out.println("Cliente de la caja 1 termino de pagar.");
-                } else if (!caja3.isEmpty()) {
+                    System.out.println("Cliente atendido en Caja 2, carrito liberado.");
+                }
+
+                if (!caja3.isEmpty()) {
                     caja3.poll();
                     carritosDisponibles++;
                     people_in--;
-                    seLiberoCarrito = true;
-                    System.out.println("Cliente de la caja 1 termino de pagar.");
+                    System.out.println("Cliente atendido en Caja 3, carrito liberado.");
                 }
-                if (seLiberoCarrito) {
-                    System.out.println(" Carritos ahora disponibles: " + carritosDisponibles);
-                } else {
-                    System.out.println(" No hay clientes esperando para pagar.");
-                }
+
+                carritosDisponibles = 25;
+
+                Thread.sleep(2000);
             }
         }
 
-        System.out.println("Supermercado Cerrado. Los " + people_in + " clientes han sido evacuados educadamente");
+        System.out.println("Supermercado Cerrado. Los " + people_in + " clientes han sido atendidos educadamente");
 
     }
 
